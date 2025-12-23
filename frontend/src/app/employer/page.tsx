@@ -40,6 +40,7 @@ import {
   Menu,
   X,
 } from "lucide-react";
+import Header from "@/components/Header";
 
 type TopTab = "activity" | "tickets" | "customers" | "knowledge" | "settings";
 
@@ -272,10 +273,11 @@ export default function Home() {
 
   return (
     <div className="flex h-[100dvh] flex-col overflow-hidden bg-[var(--background)]">
-      {/* Header - Minimalist */}
-      <header className="flex-shrink-0 bg-[var(--sidebar-bg)] border-b border-[var(--border)] z-30">
-        <div className="flex items-center justify-between h-14 px-4 lg:px-6">
-          {/* Left: Menu + Title */}
+      <Header />
+      
+      {/* Dashboard Sub-header */}
+      <div className="flex-shrink-0 bg-[var(--sidebar-bg)] border-b border-[var(--border)]">
+        <div className="flex items-center justify-between h-12 px-4 lg:px-6">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setNavSidebarOpen(!navSidebarOpen)}
@@ -299,16 +301,9 @@ export default function Home() {
                 </svg>
               </button>
             )}
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-[var(--primary)] flex items-center justify-center">
-                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <h1 className="text-base font-semibold text-[var(--foreground)]">
-                Employer Dashboard
-              </h1>
-            </div>
+            <h2 className="text-sm font-medium text-[var(--muted)]">
+              Employer Dashboard
+            </h2>
           </div>
 
           {/* Right: Gmail */}
@@ -321,7 +316,7 @@ export default function Home() {
             />
           </div>
         </div>
-      </header>
+      </div>
 
       {/* Main Layout */}
       <div className="flex flex-1 overflow-hidden relative">
@@ -499,8 +494,13 @@ export default function Home() {
                       </div>
                     </div>
                   ) : customers.length === 0 ? (
-                    <div className="p-4 text-center text-[var(--muted)] text-sm">
-                      No customers yet
+                    <div className="empty-state">
+                      <div className="empty-state-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                      </div>
+                      <p className="empty-state-description">No customers yet</p>
                     </div>
                   ) : (
                     <ul className="space-y-1">
@@ -578,14 +578,14 @@ export default function Home() {
                   </div>
                 ) : (
                   <div className="flex-1 flex items-center justify-center p-6">
-                    <div className="card p-8 text-center max-w-md">
-                      <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[var(--background)] flex items-center justify-center">
-                        <svg className="w-8 h-8 text-[var(--muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="empty-state max-w-md">
+                      <div className="empty-state-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                         </svg>
                       </div>
-                      <h3 className="text-lg font-semibold text-[var(--foreground)] mb-2">Select a Customer</h3>
-                      <p className="text-[var(--muted)] mb-4">
+                      <h3 className="empty-state-title">Select a Customer</h3>
+                      <p className="empty-state-description mb-6">
                         Select a customer from the Customers tab to view agent activity, execution plans, and audit logs.
                       </p>
                       <button
@@ -673,10 +673,20 @@ export default function Home() {
                   </div>
                   <div className="flex-1 overflow-y-auto p-2">
                     {allTicketsLoading ? (
-                      <div className="p-4 text-center text-[var(--muted)] text-sm">Loading tickets...</div>
+                      <div className="loading-state">
+                        <div className="loading-spinner"></div>
+                        <p className="text-sm text-[var(--muted)]">Loading tickets...</p>
+                      </div>
                     ) : allTickets.length === 0 ? (
-                      <div className="p-4 text-center text-[var(--muted)] text-sm">
-                        No {ticketFilter === "all" ? "" : ticketFilter} tickets
+                      <div className="empty-state">
+                        <div className="empty-state-icon">
+                          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                          </svg>
+                        </div>
+                        <p className="empty-state-description">
+                          No {ticketFilter === "all" ? "" : ticketFilter} tickets
+                        </p>
                       </div>
                     ) : (
                       <ul className="space-y-2">
@@ -799,13 +809,13 @@ export default function Home() {
                       )}
                     </div>
                   ) : (
-                    <div className="flex items-center justify-center h-full text-[var(--muted)]">
-                      <div className="text-center">
-                        <svg className="w-12 h-12 mx-auto mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="empty-state h-full">
+                      <div className="empty-state-icon">
+                        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                         </svg>
-                        <p>Select a ticket to view details</p>
                       </div>
+                      <p className="empty-state-description">Select a ticket to view details</p>
                     </div>
                   )}
                 </div>
@@ -866,10 +876,18 @@ export default function Home() {
                   </div>
                   <div className="flex-1 overflow-y-auto p-2">
                     {kbLoading ? (
-                      <div className="p-4 text-center text-[var(--muted)] text-sm">Searching...</div>
+                      <div className="loading-state">
+                        <div className="loading-spinner"></div>
+                        <p className="text-sm text-[var(--muted)]">Searching...</p>
+                      </div>
                     ) : kbResults.length === 0 ? (
-                      <div className="p-4 text-center text-[var(--muted)] text-sm">
-                        {kbSearchQuery ? "No results found" : "Enter a search query to find articles"}
+                      <div className="empty-state">
+                        <div className="empty-state-icon">
+                          <BookOpen className="w-8 h-8" />
+                        </div>
+                        <p className="empty-state-description">
+                          {kbSearchQuery ? "No results found" : "Enter a search query to find articles"}
+                        </p>
                       </div>
                     ) : (
                       <ul className="space-y-2">
@@ -929,11 +947,11 @@ export default function Home() {
                       </div>
                     </div>
                   ) : (
-                    <div className="flex items-center justify-center h-full text-[var(--muted)]">
-                      <div className="text-center">
-                        <BookOpen className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                        <p>Search and select an article to view</p>
+                    <div className="empty-state h-full">
+                      <div className="empty-state-icon">
+                        <BookOpen className="w-12 h-12" />
                       </div>
+                      <p className="empty-state-description">Search and select an article to view</p>
                     </div>
                   )}
                 </div>
@@ -1481,8 +1499,13 @@ function TicketsModal({
                 )}
               </div>
             ) : (
-              <div className="flex items-center justify-center h-full text-[var(--muted)]">
-                Select a ticket to view details
+              <div className="empty-state h-full">
+                <div className="empty-state-icon">
+                  <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                </div>
+                <p className="empty-state-description">Select a ticket to view details</p>
               </div>
             )}
           </div>

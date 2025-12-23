@@ -199,10 +199,16 @@ export async function fetchCustomers(): Promise<Customer[]> {
   return data.customers;
 }
 
+// Alias for customer portal
+export const getCustomers = fetchCustomers;
+
 export async function fetchCustomerMessages(customerId: number): Promise<Message[]> {
   const data = await request<{ messages: Message[] }>(`/api/customers/${customerId}/messages`);
   return data.messages;
 }
+
+// Alias for customer portal
+export const getCustomerMessages = fetchCustomerMessages;
 
 // Response types for sendCustomerMessage
 export interface SendMessagePendingResponse {
@@ -255,11 +261,14 @@ export async function approveMessage(
 
 export async function fetchCustomerTickets(
   customerId: number,
-  status: TicketStatusFilter = "open"
+  status: TicketStatusFilter = "all"
 ): Promise<{ tickets: Ticket[]; count: number }> {
   const data = await request<TicketsResponse>(`/api/customers/${customerId}/tickets?status=${status}`);
   return { tickets: data.tickets, count: data.count };
 }
+
+// Alias for customer portal
+export const getCustomerTickets = fetchCustomerTickets;
 
 export async function fetchAllTickets(
   status: TicketStatusFilter = "all"
@@ -307,6 +316,7 @@ export async function seedDatabase(): Promise<{ message: string; seeded: boolean
 
 // Alias for consistency
 export const seedDemo = seedDatabase;
+export const seedDemoData = seedDatabase;
 
 // ============================================================================
 // Gmail APIs
