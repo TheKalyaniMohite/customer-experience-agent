@@ -1185,7 +1185,8 @@ function StepDetailsModal({
 }) {
   const [executing, setExecuting] = useState(false);
   const [executeError, setExecuteError] = useState<string | null>(null);
-  const [localOutput, setLocalOutput] = useState<unknown>(null);
+  // Store executed action output as a plain object for safe rendering
+  const [localOutput, setLocalOutput] = useState<Record<string, unknown> | null>(null);
 
   useEffect(() => {
     setExecuteError(null);
@@ -1265,7 +1266,7 @@ function StepDetailsModal({
             <p className="text-sm text-[var(--muted)]">{step.description}</p>
           </div>
 
-          {(auditLog || localOutput) && (
+          {Boolean(auditLog || localOutput) && (
             <div>
               <h3 className="text-sm font-medium text-[var(--foreground)] mb-1">Status</h3>
               <span className={`badge ${auditLog?.success !== false ? "badge-success" : "badge-danger"}`}>
