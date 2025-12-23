@@ -62,7 +62,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [messagesLoading, setMessagesLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [activeTopTab, setActiveTopTab] = useState<TopTab>("activity");
+  const [activeTopTab, setActiveTopTab] = useState<TopTab>("customers");
   const [newMessage, setNewMessage] = useState("");
   const [sending, setSending] = useState(false);
   const [sendError, setSendError] = useState<string | null>(null);
@@ -79,7 +79,6 @@ export default function Home() {
   const [gmailStatus, setGmailStatus] = useState<GmailStatus>({ connected: false, enabled: false });
   const [gmailLoading, setGmailLoading] = useState(false);
   const [showTicketsModal, setShowTicketsModal] = useState(false);
-  const [showSuccessDashboard, setShowSuccessDashboard] = useState(false);
   const [ticketFilter, setTicketFilter] = useState<TicketStatusFilter>("all");
   const [selectedGlobalTicket, setSelectedGlobalTicket] = useState<TicketWithCustomer | null>(null);
   const [allTicketsLoading, setAllTicketsLoading] = useState(false);
@@ -270,24 +269,16 @@ export default function Home() {
     setTicketNotification(null);
   }
 
-  const topTabs: Array<{ id: TopTab; label: string }> = [
-    { id: "activity", label: "Activity" },
-    { id: "tickets", label: "Tickets" },
-    { id: "customers", label: "Customers" },
-    { id: "knowledge", label: "Knowledge Base" },
-    { id: "settings", label: "Settings" },
-  ];
-
   return (
     <div className="flex h-[100dvh] flex-col overflow-hidden bg-[var(--background)]">
-      {/* Header - Enterprise Style */}
-      <header className="flex-shrink-0 bg-[var(--sidebar-bg)] border-b border-[var(--border)] shadow-sm z-30 backdrop-blur-sm bg-opacity-95">
-        <div className="flex items-center justify-between h-16 px-4 lg:px-8">
+      {/* Header - Minimalist */}
+      <header className="flex-shrink-0 bg-[var(--sidebar-bg)] border-b border-[var(--border)] z-30">
+        <div className="flex items-center justify-between h-14 px-4 lg:px-6">
           {/* Left: Menu + Title */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <button
               onClick={() => setNavSidebarOpen(!navSidebarOpen)}
-              className="lg:hidden p-2 -ml-2 rounded-lg hover:bg-[var(--background)] transition-all duration-200"
+              className="lg:hidden p-2 -ml-2 rounded-md hover:bg-[var(--background)] transition-colors"
               aria-label="Toggle navigation"
             >
               {navSidebarOpen ? (
@@ -299,7 +290,7 @@ export default function Home() {
             {activeTopTab === "customers" && (
               <button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="lg:hidden p-2 rounded-lg hover:bg-[var(--background)] transition-all duration-200"
+                className="lg:hidden p-2 rounded-md hover:bg-[var(--background)] transition-colors"
                 aria-label="Toggle customer list"
               >
                 <svg className="w-5 h-5 text-[var(--foreground)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -307,82 +298,26 @@ export default function Home() {
                 </svg>
               </button>
             )}
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--primary)] via-indigo-600 to-purple-600 flex items-center justify-center shadow-lg ring-2 ring-[var(--primary)]/20">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-[var(--primary)] flex items-center justify-center">
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <div>
-                <h1 className="text-lg lg:text-xl font-bold text-[var(--foreground)] tracking-tight">
-                  Employer Dashboard
-                </h1>
-                <p className="text-xs text-[var(--muted)] hidden sm:block">AI-Powered Support Workspace</p>
-              </div>
+              <h1 className="text-base font-semibold text-[var(--foreground)]">
+                Employer Dashboard
+              </h1>
             </div>
           </div>
 
-          {/* Center: Top Tabs - Enterprise Style */}
-          <nav className="hidden md:flex bg-[var(--background)] rounded-xl p-1.5 border border-[var(--border)] shadow-sm">
-            {topTabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTopTab(tab.id)}
-                className={`px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200 whitespace-nowrap relative ${
-                  activeTopTab === tab.id
-                    ? "bg-[var(--primary)] text-white shadow-md scale-105"
-                    : "text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card-bg)]"
-                }`}
-              >
-                {tab.label}
-                {activeTopTab === tab.id && (
-                  <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-white rounded-full" />
-                )}
-              </button>
-            ))}
-          </nav>
-
-          {/* Mobile Tabs */}
-          <nav className="md:hidden flex bg-[var(--background)] rounded-lg p-1 overflow-x-auto scrollbar-hide">
-            {topTabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTopTab(tab.id)}
-                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all whitespace-nowrap ${
-                  activeTopTab === tab.id
-                    ? "bg-[var(--primary)] text-white shadow-sm"
-                    : "text-[var(--muted)]"
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </nav>
-
-          {/* Right: Gmail + Agent Panel Toggle */}
+          {/* Right: Gmail */}
           <div className="flex items-center gap-2">
-            {/* Gmail Connect Button */}
             <GmailButton 
               gmailStatus={gmailStatus} 
               onStatusChange={loadGmailStatus}
               loading={gmailLoading}
               setLoading={setGmailLoading}
             />
-            
-            {/* Agent Panel Toggle (mobile) - only for Customers tab */}
-            {activeTopTab === "customers" && (
-              <button
-                onClick={() => setAgentPanelOpen(!agentPanelOpen)}
-                className={`lg:hidden p-2 rounded-lg transition-colors ${
-                  agentPanelOpen ? "bg-[var(--primary)] text-white" : "hover:bg-[var(--background)] text-[var(--foreground)]"
-                }`}
-                aria-label="Toggle agent panel"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-              </button>
-            )}
           </div>
         </div>
       </header>
@@ -397,130 +332,109 @@ export default function Home() {
           />
         )}
 
-        {/* Navigation Sidebar */}
+        {/* Navigation Sidebar - Minimalist */}
         <aside className={`
           fixed lg:static inset-y-0 left-0 z-50
-          w-64
+          w-56
           bg-[var(--sidebar-bg)] border-r border-[var(--border)]
           flex flex-col
-          transform transition-transform duration-300 ease-out
+          transform transition-transform duration-200 ease-out
           ${navSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
         `}>
-          {/* Navigation Sidebar Header */}
-          <div className="flex-shrink-0 p-4 border-b border-[var(--border)] lg:hidden">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xs font-semibold text-[var(--muted)] uppercase tracking-wider">
-                Navigation
-              </h2>
-              <button
-                onClick={() => setNavSidebarOpen(false)}
-                className="p-1.5 rounded-lg hover:bg-[var(--background)] transition-colors"
-              >
-                <X className="w-4 h-4 text-[var(--muted)]" />
-              </button>
-            </div>
-          </div>
-
-          {/* Navigation Items - Enterprise Style */}
-          <nav className="flex-1 overflow-y-auto p-3 space-y-1">
+          {/* Navigation Items */}
+          <nav className="flex-1 overflow-y-auto p-2">
             <button
               onClick={() => {
-                setActiveTopTab("activity");
+                setActiveTopTab("customers");
                 setShowSuccessDashboard(false);
                 setNavSidebarOpen(false);
               }}
               className={`
-                w-full flex items-center gap-3 px-4 py-3 rounded-xl mb-1
-                transition-all duration-200 text-left group
+                w-full flex items-center gap-3 px-3 py-2.5 rounded-md mb-1
+                transition-colors text-left
                 ${
-                  activeTopTab === "activity" && !showSuccessDashboard
-                    ? "bg-gradient-to-r from-[var(--primary)] to-indigo-600 text-white shadow-lg scale-[1.02]"
-                    : "text-[var(--muted)] hover:bg-[var(--background)] hover:text-[var(--foreground)] hover:shadow-sm"
+                  activeTopTab === "customers"
+                    ? "bg-[var(--primary)] text-white"
+                    : "text-[var(--muted)] hover:bg-[var(--background)] hover:text-[var(--foreground)]"
                 }
               `}
             >
-              <div className={`p-1.5 rounded-lg ${
-                activeTopTab === "activity" && !showSuccessDashboard
-                  ? "bg-white/20"
-                  : "bg-[var(--background)] group-hover:bg-[var(--card-bg)]"
-              }`}>
-                <Inbox className="w-4 h-4" />
-              </div>
-              <span className="text-sm font-semibold">Support Inbox</span>
+              <Inbox className="w-4 h-4" />
+              <span className="text-sm font-medium">Customers</span>
             </button>
             <button
               onClick={() => {
-                setShowSuccessDashboard(true);
+                setActiveTopTab("tickets");
                 setNavSidebarOpen(false);
               }}
               className={`
-                w-full flex items-center gap-3 px-4 py-3 rounded-xl mb-1
-                transition-all duration-200 text-left group
+                w-full flex items-center gap-3 px-3 py-2.5 rounded-md mb-1
+                transition-colors text-left
                 ${
-                  showSuccessDashboard
-                    ? "bg-gradient-to-r from-[var(--primary)] to-indigo-600 text-white shadow-lg scale-[1.02]"
-                    : "text-[var(--muted)] hover:bg-[var(--background)] hover:text-[var(--foreground)] hover:shadow-sm"
+                  activeTopTab === "tickets"
+                    ? "bg-[var(--primary)] text-white"
+                    : "text-[var(--muted)] hover:bg-[var(--background)] hover:text-[var(--foreground)]"
                 }
               `}
             >
-              <div className={`p-1.5 rounded-lg ${
-                showSuccessDashboard
-                  ? "bg-white/20"
-                  : "bg-[var(--background)] group-hover:bg-[var(--card-bg)]"
-              }`}>
-                <BarChart3 className="w-4 h-4" />
-              </div>
-              <span className="text-sm font-semibold">Success Dashboard</span>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+              <span className="text-sm font-medium">Tickets</span>
+            </button>
+            <button
+              onClick={() => {
+                setActiveTopTab("activity");
+                setNavSidebarOpen(false);
+              }}
+              className={`
+                w-full flex items-center gap-3 px-3 py-2.5 rounded-md mb-1
+                transition-colors text-left
+                ${
+                  activeTopTab === "activity"
+                    ? "bg-[var(--primary)] text-white"
+                    : "text-[var(--muted)] hover:bg-[var(--background)] hover:text-[var(--foreground)]"
+                }
+              `}
+            >
+              <BarChart3 className="w-4 h-4" />
+              <span className="text-sm font-medium">Activity</span>
             </button>
             <button
               onClick={() => {
                 setActiveTopTab("knowledge");
-                setShowSuccessDashboard(false);
                 setNavSidebarOpen(false);
               }}
               className={`
-                w-full flex items-center gap-3 px-4 py-3 rounded-xl mb-1
-                transition-all duration-200 text-left group
+                w-full flex items-center gap-3 px-3 py-2.5 rounded-md mb-1
+                transition-colors text-left
                 ${
-                  activeTopTab === "knowledge" && !showSuccessDashboard
-                    ? "bg-gradient-to-r from-[var(--primary)] to-indigo-600 text-white shadow-lg scale-[1.02]"
-                    : "text-[var(--muted)] hover:bg-[var(--background)] hover:text-[var(--foreground)] hover:shadow-sm"
+                  activeTopTab === "knowledge"
+                    ? "bg-[var(--primary)] text-white"
+                    : "text-[var(--muted)] hover:bg-[var(--background)] hover:text-[var(--foreground)]"
                 }
               `}
             >
-              <div className={`p-1.5 rounded-lg ${
-                activeTopTab === "knowledge" && !showSuccessDashboard
-                  ? "bg-white/20"
-                  : "bg-[var(--background)] group-hover:bg-[var(--card-bg)]"
-              }`}>
-                <BookOpen className="w-4 h-4" />
-              </div>
-              <span className="text-sm font-semibold">Knowledge Base</span>
+              <BookOpen className="w-4 h-4" />
+              <span className="text-sm font-medium">Knowledge Base</span>
             </button>
             <button
               onClick={() => {
                 setActiveTopTab("settings");
-                setShowSuccessDashboard(false);
                 setNavSidebarOpen(false);
               }}
               className={`
-                w-full flex items-center gap-3 px-4 py-3 rounded-xl mb-1
-                transition-all duration-200 text-left group
+                w-full flex items-center gap-3 px-3 py-2.5 rounded-md mb-1
+                transition-colors text-left
                 ${
-                  activeTopTab === "settings" && !showSuccessDashboard
-                    ? "bg-gradient-to-r from-[var(--primary)] to-indigo-600 text-white shadow-lg scale-[1.02]"
-                    : "text-[var(--muted)] hover:bg-[var(--background)] hover:text-[var(--foreground)] hover:shadow-sm"
+                  activeTopTab === "settings"
+                    ? "bg-[var(--primary)] text-white"
+                    : "text-[var(--muted)] hover:bg-[var(--background)] hover:text-[var(--foreground)]"
                 }
               `}
             >
-              <div className={`p-1.5 rounded-lg ${
-                activeTopTab === "settings" && !showSuccessDashboard
-                  ? "bg-white/20"
-                  : "bg-[var(--background)] group-hover:bg-[var(--card-bg)]"
-              }`}>
-                <Settings className="w-4 h-4" />
-              </div>
-              <span className="text-sm font-semibold">Settings</span>
+              <Settings className="w-4 h-4" />
+              <span className="text-sm font-medium">Settings</span>
             </button>
           </nav>
         </aside>
@@ -538,142 +452,107 @@ export default function Home() {
                 />
               )}
 
-              {/* Customer List Sidebar */}
+              {/* Customer List Sidebar - Clean & Minimalist */}
               <aside className={`
                 fixed lg:static inset-y-0 left-0 z-50
-                w-72 lg:w-64 xl:w-72
+                w-64
                 bg-[var(--sidebar-bg)] border-r border-[var(--border)]
                 flex flex-col
-                transform transition-transform duration-300 ease-out
+                transform transition-transform duration-200 ease-out
                 ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
               `}>
-          {/* Sidebar Header - Enterprise Style */}
-          <div className="flex-shrink-0 p-5 border-b border-[var(--border)] bg-gradient-to-r from-[var(--background)] to-transparent">
-            <div className="flex items-center justify-between mb-3">
-              <div>
-                <h2 className="text-sm font-bold text-[var(--foreground)] mb-0.5">
-                  Customers
-                </h2>
-                <p className="text-xs text-[var(--muted)]">
-                  {customers.length} {customers.length === 1 ? 'customer' : 'customers'}
-                </p>
-              </div>
-              <button
-                onClick={() => setSidebarOpen(false)}
-                className="lg:hidden p-1.5 rounded-lg hover:bg-[var(--background)] transition-all duration-200"
-              >
-                <svg className="w-4 h-4 text-[var(--muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            {customers.length === 0 && !loading && (
-              <button
-                onClick={handleSeed}
-                className="w-full mt-2 btn btn-primary text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-200"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-                Seed Demo Data
-              </button>
-            )}
-          </div>
-
-          {/* Customer List - Enterprise Style */}
-          <div className="flex-1 overflow-y-auto p-3">
-            {loading ? (
-              <div className="space-y-3">
-                {[1,2,3].map(i => (
-                  <div key={i} className="skeleton h-20 rounded-xl" />
-                ))}
-              </div>
-            ) : error ? (
-              <div className="p-4">
-                <div className="p-4 bg-[var(--danger-light)] border border-[var(--danger)]/30 rounded-xl shadow-sm">
-                  <p className="text-sm text-[var(--danger)] whitespace-pre-wrap break-words font-medium">{error}</p>
-                </div>
-              </div>
-            ) : customers.length === 0 ? (
-              <div className="p-6 text-center">
-                <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-[var(--background)] flex items-center justify-center">
-                  <svg className="w-8 h-8 text-[var(--muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
-                </div>
-                <p className="text-sm text-[var(--muted)] font-medium">No customers yet</p>
-              </div>
-            ) : (
-              <ul className="space-y-2">
-                {customers.map((customer) => (
-                  <li key={customer.id}>
+                {/* Sidebar Header */}
+                <div className="flex-shrink-0 p-3 border-b border-[var(--border)]">
+                  <div className="flex items-center justify-between mb-2">
+                    <h2 className="text-sm font-semibold text-[var(--foreground)]">
+                      Customers
+                    </h2>
                     <button
-                      onClick={() => handleSelectCustomer(customer)}
-                      className={`w-full text-left p-4 rounded-xl transition-all duration-200 group border ${
-                        selectedCustomer?.id === customer.id
-                          ? "bg-gradient-to-r from-[var(--primary-light)] to-indigo-50 dark:to-indigo-950/30 border-[var(--primary)] shadow-md scale-[1.02]"
-                          : "bg-[var(--card-bg)] border-[var(--border)] hover:border-[var(--primary)]/50 hover:shadow-md hover:scale-[1.01]"
-                      }`}
+                      onClick={() => setSidebarOpen(false)}
+                      className="lg:hidden p-1 rounded hover:bg-[var(--background)] transition-colors"
                     >
-                      <div className="flex items-center gap-3">
-                        <div className={`relative flex-shrink-0 ${
-                          selectedCustomer?.id === customer.id ? "" : "opacity-90 group-hover:opacity-100"
-                        }`}>
-                          <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg ${
-                            selectedCustomer?.id === customer.id
-                              ? "bg-gradient-to-br from-[var(--primary)] to-indigo-600 ring-2 ring-[var(--primary)]/30"
-                              : "bg-gradient-to-br from-[var(--primary)] to-purple-600"
-                          }`}>
-                            {customer.name.charAt(0)}
-                          </div>
-                          <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-[var(--success)] rounded-full border-2 border-[var(--card-bg)] ring-1 ring-[var(--success)]/20" />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <div className={`font-semibold text-sm truncate mb-0.5 ${
-                            selectedCustomer?.id === customer.id 
-                              ? "text-[var(--primary)]" 
-                              : "text-[var(--foreground)]"
-                          }`}>
-                            {customer.name}
-                          </div>
-                          <div className="text-xs text-[var(--muted)] truncate mb-1">
-                            {customer.email}
-                          </div>
-                          {customer.company && (
-                            <div className="inline-flex items-center gap-1 px-2 py-0.5 bg-[var(--background)] rounded-md text-xs text-[var(--muted)] font-medium">
-                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                              </svg>
-                              {customer.company}
-                            </div>
-                          )}
-                        </div>
-                      </div>
+                      <X className="w-4 h-4 text-[var(--muted)]" />
                     </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </aside>
+                  </div>
+                  {customers.length === 0 && !loading && (
+                    <button
+                      onClick={handleSeed}
+                      className="w-full px-3 py-1.5 text-xs font-medium bg-[var(--primary)] text-white rounded-md hover:bg-[var(--primary-hover)] transition-colors"
+                    >
+                      Seed Demo Data
+                    </button>
+                  )}
+                </div>
+
+                {/* Customer List */}
+                <div className="flex-1 overflow-y-auto p-2">
+                  {loading ? (
+                    <div className="space-y-2">
+                      {[1,2,3].map(i => (
+                        <div key={i} className="skeleton h-14 rounded-md" />
+                      ))}
+                    </div>
+                  ) : error ? (
+                    <div className="p-3">
+                      <div className="p-3 bg-[var(--danger-light)] border border-[var(--danger)]/20 rounded-md">
+                        <p className="text-xs text-[var(--danger)] break-words">{error}</p>
+                      </div>
+                    </div>
+                  ) : customers.length === 0 ? (
+                    <div className="p-4 text-center text-[var(--muted)] text-sm">
+                      No customers yet
+                    </div>
+                  ) : (
+                    <ul className="space-y-1">
+                      {customers.map((customer) => (
+                        <li key={customer.id}>
+                          <button
+                            onClick={() => handleSelectCustomer(customer)}
+                            className={`w-full text-left p-2.5 rounded-md transition-colors ${
+                              selectedCustomer?.id === customer.id
+                                ? "bg-[var(--primary)] text-white"
+                                : "hover:bg-[var(--background)] text-[var(--foreground)]"
+                            }`}
+                          >
+                            <div className="flex items-center gap-2.5">
+                              <div className={`w-8 h-8 rounded-md flex items-center justify-center text-xs font-medium ${
+                                selectedCustomer?.id === customer.id
+                                  ? "bg-white/20 text-white"
+                                  : "bg-[var(--primary)] text-white"
+                              }`}>
+                                {customer.name.charAt(0)}
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <div className={`text-sm truncate ${
+                                  selectedCustomer?.id === customer.id 
+                                    ? "font-medium" 
+                                    : "font-normal"
+                                }`}>
+                                  {customer.name}
+                                </div>
+                                <div className={`text-xs truncate ${
+                                  selectedCustomer?.id === customer.id
+                                    ? "text-white/70"
+                                    : "text-[var(--muted)]"
+                                }`}>
+                                  {customer.email}
+                                </div>
+                              </div>
+                            </div>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </aside>
             </>
           )}
 
           {/* Main Content */}
           <main className="flex-1 flex flex-col overflow-hidden">
-            {/* Success Dashboard (from left sidebar) */}
-            {showSuccessDashboard && (
-              <SuccessDashboard
-                customers={customers}
-                selectedCustomer={selectedCustomer}
-                onSelectCustomer={handleSelectCustomer}
-                loading={loading}
-                error={error}
-              />
-            )}
-
             {/* Activity Tab - Show ONLY agent activity (execution plan/audit log) */}
-            {!showSuccessDashboard && activeTopTab === "activity" && (
+            {activeTopTab === "activity" && (
               <div className="flex-1 flex overflow-hidden">
                 {selectedCustomer ? (
                   <div className="flex-1 flex">
@@ -722,7 +601,7 @@ export default function Home() {
             )}
 
             {/* Customers Tab - Show customer list + chat conversation (full inbox workflow) */}
-            {!showSuccessDashboard && activeTopTab === "customers" && (
+            {activeTopTab === "customers" && (
               <SupportInbox
                 customer={selectedCustomer}
                 messages={messages}
@@ -753,7 +632,7 @@ export default function Home() {
             )}
 
             {/* Tickets Tab - Global ticket management */}
-            {!showSuccessDashboard && activeTopTab === "tickets" && (
+            {activeTopTab === "tickets" && (
               <div className="flex-1 flex overflow-hidden">
                 {/* Ticket List */}
                 <div className="w-full lg:w-96 border-r border-[var(--border)] bg-[var(--sidebar-bg)] flex flex-col">
@@ -935,7 +814,7 @@ export default function Home() {
 
 
             {/* Knowledge Base Tab */}
-            {!showSuccessDashboard && activeTopTab === "knowledge" && (
+            {activeTopTab === "knowledge" && (
               <div className="flex-1 flex overflow-hidden">
                 {/* KB Search & List */}
                 <div className="w-full lg:w-96 border-r border-[var(--border)] bg-[var(--sidebar-bg)] flex flex-col">
@@ -1062,7 +941,7 @@ export default function Home() {
             )}
 
             {/* Settings Tab */}
-            {!showSuccessDashboard && activeTopTab === "settings" && (
+            {activeTopTab === "settings" && (
               <div className="flex-1 overflow-y-auto p-6">
                 <div className="max-w-4xl mx-auto">
                   <h2 className="text-2xl font-bold text-[var(--foreground)] mb-6">Settings</h2>
