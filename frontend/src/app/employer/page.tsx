@@ -347,7 +347,6 @@ export default function Home() {
             <button
               onClick={() => {
                 setActiveTopTab("customers");
-                setShowSuccessDashboard(false);
                 setNavSidebarOpen(false);
               }}
               className={`
