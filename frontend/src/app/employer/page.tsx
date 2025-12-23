@@ -4,7 +4,8 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { 
   fetchCustomers, 
   fetchCustomerMessages, 
-  sendCustomerMessage, 
+  sendCustomerMessage,
+  SendCustomerMessageResponse,
   approveMessage,
   fetchLatestAgentRun,
   fetchCustomerTickets,
@@ -198,7 +199,7 @@ export default function Home() {
     try {
       setSending(true);
       setSendError(null);
-      const response = await sendCustomerMessage(selectedCustomer.id, newMessage.trim(), humanApprovalMode);
+      const response: SendCustomerMessageResponse = await sendCustomerMessage(selectedCustomer.id, newMessage.trim(), humanApprovalMode);
       
       if (response.status === "pending_approval") {
         setMessages((prev) => [...prev, response.customer_message]);
@@ -208,7 +209,7 @@ export default function Home() {
           originalText: response.draft_reply,
           pendingWrites: response.pending_writes || [],
         });
-      } else {
+      } else if (response.status === "sent") {
         setMessages((prev) => [...prev, response.customer_message, response.agent_message]);
         setAgentRun(response.agent_run);
         setDraftReply(null);

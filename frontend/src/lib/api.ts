@@ -204,11 +204,29 @@ export async function fetchCustomerMessages(customerId: number): Promise<Message
   return data.messages;
 }
 
+// Response types for sendCustomerMessage
+export interface SendMessagePendingResponse {
+  status: "pending_approval";
+  customer_message: Message;
+  draft_reply: string;
+  agent_run: AgentRun;
+  pending_writes: PendingWrite[];
+}
+
+export interface SendMessageSentResponse {
+  status: "sent";
+  customer_message: Message;
+  agent_message: Message;
+  agent_run: AgentRun;
+}
+
+export type SendCustomerMessageResponse = SendMessagePendingResponse | SendMessageSentResponse;
+
 export async function sendCustomerMessage(
   customerId: number,
   text: string,
   requiresApproval: boolean = false
-): Promise<{ agent_run: AgentRun; draft_reply?: string; pending_writes?: PendingWrite[] }> {
+): Promise<SendCustomerMessageResponse> {
   return request(`/api/customers/${customerId}/messages`, {
     method: "POST",
     body: JSON.stringify({ text, requires_approval: requiresApproval }),
