@@ -268,10 +268,11 @@ export async function fetchAllTickets(
   return { tickets: data.tickets, count: data.count };
 }
 
-export async function closeTicket(ticketId: number): Promise<{ ticket: Ticket }> {
-  return request(`/api/tickets/${ticketId}/close`, {
+export async function closeTicket(ticketId: number): Promise<Ticket> {
+  const data = await request<{ ticket: Ticket }>(`/api/tickets/${ticketId}/close`, {
     method: "POST",
   });
+  return data.ticket;
 }
 
 // ============================================================================

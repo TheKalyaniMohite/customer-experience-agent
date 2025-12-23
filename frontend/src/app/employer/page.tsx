@@ -784,8 +784,8 @@ export default function Home() {
                           <button
                             onClick={async () => {
                               try {
-                                await closeTicket(selectedGlobalTicket.id);
-                                setSelectedGlobalTicket({ ...selectedGlobalTicket, status: "closed", closed_at: new Date().toISOString() });
+                                const updatedTicket = await closeTicket(selectedGlobalTicket.id);
+                                setSelectedGlobalTicket({ ...selectedGlobalTicket, ...updatedTicket });
                                 await loadAllTickets(ticketFilter);
                               } catch (err) {
                                 alert(err instanceof Error ? err.message : "Failed to close ticket");
